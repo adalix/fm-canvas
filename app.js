@@ -1,7 +1,7 @@
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext("2d");   
 
-canvas.width = innerWidth;
+ canvas.width = innerWidth;
 canvas.height = innerHeight
 
 // const img = new Image();
@@ -83,9 +83,10 @@ function animate(){
     ball.y = mouse.y
     ball.update()
 
+    
+    player.x += 0.6 * ((mouse.x >= player.x) ? 1 : -1);
+    player.y += 0.6  * ((mouse.y >= player.y) ? 1 : -1);
 
-    player.x += 0.6 
-    player.y += 0.6 
     player.update()
 
     if(getDistance(ball.x, ball.y, player.x, player.y) < ball.radius + player.radius){
