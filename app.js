@@ -1,19 +1,23 @@
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext("2d");   
 
- canvas.width = innerWidth;
+canvas.width = innerWidth;
 canvas.height = innerHeight
 
-// const img = new Image();
-// img.src = 'saha_yatay.png';
-// img.style.transform =" rotate(90deg)";
+const image = {
+    imageX : 960,
+    imageY : 601 
+}
+
+const img = new Image();
+img.src = 'saha_yatay.png';
+img.style.transform = " rotate(90deg)";
 
 
 let mouse = {
-    x : innerWidth / 2,
-    y : innerHeight / 2
+    x : undefined ,
+    y : undefined 
 }
-
 
 
 addEventListener('mousemove', (e)=>{
@@ -45,15 +49,18 @@ class Ball{
     update(){
         this.draw()
     }
+    
 }
 
 class CreatePlayer {
     constructor() {
-        this.x = Math.random() * innerWidth,
-        this.y = Math.random() * innerHeight,
+        this.x = Math.random() * image.imageX,
+        this.y = Math.random() * image.imageY,
         this.w = 20,
-        this.radius = 20
-        this.color = 'red'
+        this.radius = 20,
+        this.color = 'red' ,
+        this.speed = Math.random() * 1,
+        this.number = Math.floor(Math.random() * 11 + 1 )
     }
     
     draw(){
@@ -61,48 +68,61 @@ class CreatePlayer {
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();
-        // ctx.lineWidth = 2;
-        // ctx.strokeStyle = "black";
-        // ctx.font = "20px Arial";
-        // ctx.strokeText("23", this.x-10, this.y+6);
-        // ctx.stroke();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.strokeText(this.number, this.x-10, this.y+6);
+        ctx.stroke();
     }
     update(){
         this.draw()
     }
+    getBall(){
+        console.log(this.x)
+        this.x += this.speed * (mouse.x >= this.x) ? 1 : -1
+        this.y += this.speed  * (mouse.y >= this.y) ? 1 : -1
+        console.log(this.x ,'bu ikinci')
+    }
 }
 let ball  = new Ball()
-let player = new CreatePlayer(); 
+// let player = new CreatePlayer(); 
+let players = []
+
+for(let i = 0 ; i < 4; i++){
+    players.push(new CreatePlayer())
+}
+
+console.log(players)
+    
 
 function animate(){
 
     requestAnimationFrame(animate);
     ctx.clearRect(0,0,canvas.width, canvas.height)
-    
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < players.length; i++){
+        players[i].update()
+        players[i].getBall()
+    }
+
     ball.x = mouse.x
     ball.y = mouse.y
     ball.update()
 
-    
-    player.x += 0.6 * ((mouse.x >= player.x) ? 1 : -1);
-    player.y += 0.6  * ((mouse.y >= player.y) ? 1 : -1);
-
-    player.update()
-
-    if(getDistance(ball.x, ball.y, player.x, player.y) < ball.radius + player.radius){
-        ball.color = 'red';
-    }else{
-        ball.color = 'white';
-    }
-
-    
+    // if(getDistance(ball.x, ball.y, player.x, player.y) < ball.radius + player.radius){
+    //     ball.color = 'red';
+    // }else{
+    //     ball.color = 'white';
+    // }
 
 }
 animate()
 
 
+    // 960 x 601
 
-
+    // kaleci 102 x 348
 
 
         // ctx.beginPath();
