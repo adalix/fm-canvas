@@ -10,35 +10,25 @@ const image = {
 }
 
 const img = new Image();
-img.src = 'saha_yatay.png';
+img.src = 'pitch_horizontal.png';
 img.style.transform = " rotate(90deg)";
 
-
-let mouse = {
-    x : undefined ,
-    y : undefined 
-}
-
+let mouseX;
+let mouseY;
 
 addEventListener('mousemove', (e)=>{
-        mouse.x = e.clientX,
-        mouse.y = e.clientY
+    mouseX = e.clientX
+    mouseY = e.clientY
 
 })
 
-function getDistance(x1,y1,x2,y2){
-    let xDist = x2 - x1
-    let yDist = y2 - y1
-    return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2))
-}
-
-
 class Ball{
     constructor(){
-        this.x = mouse.x,
-        this.y = mouse.y,
+        this.x = mouseX,
+        this.y = mouseY,
         this.radius = 10,
         this.color = 'white'
+        this.isBall = false
     }
     draw(){
         ctx.beginPath();
@@ -48,19 +38,22 @@ class Ball{
     }
     update(){
         this.draw()
+        if(mouseX || mouseY ){
+            this.isBall = true
+        }
     }
     
 }
 
-class CreatePlayer {
-    constructor() {
-        this.x = Math.random() * image.imageX,
-        this.y = Math.random() * image.imageY,
-        this.w = 20,
-        this.radius = 20,
-        this.color = 'red' ,
-        this.speed = Math.random() * 1,
-        this.number = Math.floor(Math.random() * 11 + 1 )
+class Player {
+    constructor(x,y,color,number ) {
+        this.x = x
+        this.y = y
+        this.w = 20
+        this.radius = 20
+        this.color = color 
+        this.speed = Math.random() * 1
+        this.number = number
     }
     
     draw(){
@@ -77,23 +70,31 @@ class CreatePlayer {
     update(){
         this.draw()
     }
-    getBall(){
-        console.log(this.x)
-        this.x += this.speed * (mouse.x >= this.x) ? 1 : -1
-        this.y += this.speed  * (mouse.y >= this.y) ? 1 : -1
-        console.log(this.x ,'bu ikinci')
+    trackBall(){
+        if(ball.isBall){
+            this.x += this.speed * (mouseX >= this.x) ? 1 : -1
+            this.y += this.speed  * (mouseY >= this.y) ? 1 : -1
+            console.log('ball in the pitch')
+        }
+        
     }
 }
+
+
 let ball  = new Ball()
-// let player = new CreatePlayer(); 
 let players = []
+let defenders = []
 
 for(let i = 0 ; i < 4; i++){
-    players.push(new CreatePlayer())
-}
-
-console.log(players)
+    let x = 163
+    let y = Math.random() * 163 
+    let color = 'blue'
+    let number = 2
     
+    defenders.push(new Player(x,y,color,number))
+
+}
+players = players.concat(defenders) 
 
 function animate(){
 
@@ -103,34 +104,12 @@ function animate(){
 
     for (let i = 0; i < players.length; i++){
         players[i].update()
-        players[i].getBall()
+        players[i].trackBall()
     }
 
-    ball.x = mouse.x
-    ball.y = mouse.y
+    ball.x = mouseX
+    ball.y = mouseY
     ball.update()
-
-    // if(getDistance(ball.x, ball.y, player.x, player.y) < ball.radius + player.radius){
-    //     ball.color = 'red';
-    // }else{
-    //     ball.color = 'white';
-    // }
 
 }
 animate()
-
-
-    // 960 x 601
-
-    // kaleci 102 x 348
-
-
-        // ctx.beginPath();
-        // ctx.arc(x, 50, 30, 0, 2 * Math.PI);
-        // ctx.fillStyle = "red";
-        // ctx.fill();
-        // ctx.lineWidth = 4;                      //! burasi tam istedigim gibi olusturacagin classi buna gore ayarla !!!
-        // ctx.strokeStyle = "blue";
-        // ctx.font = "25px Arial";
-        // ctx.strokeText("23",x,50);
-        // ctx.stroke();
